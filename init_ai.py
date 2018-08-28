@@ -2,7 +2,7 @@
 from suit import Suit
 from card import Card
 
-class inital_AI:
+class init_AI:
 
 
     team = -1
@@ -66,46 +66,22 @@ class inital_AI:
         print(hokm)
         return hokm
 
-
-    def select_card(self,inital_suit,cards_on_table):
-        print(self.hand)
-        if inital_suit is None:
-            return self.hand[0]
-        else:
-            print(Card(split_set[0].lower(), self.card_value(split_set[1])))
-            return self.select_card()
-
-    def check_suit(self,suit):
-        for card in self.hand:
-            if card.suit == suit:
-                return True
-        return False
+    # def check_suit(self,suit):
+    #     for card in self.hand:
+    #         if card.suit == suit:
+    #             return True
+    #     return False
     # play_card requires the A_I to look at cards on table and play, if first card they should pick their highest card.
-    # def play_card(self,inital_suit, cards_on_table):
-    #     print(cards_on_table)
-    #     (self.hand.sort())
-    #     if inital_suit is None:
-    #         card = self.select_card(inital_suit,cards_on_table)
-    #         print('Played ', card)
-    #         return card
-    #
-    #     else:
-    #         card = self.select_card()
-    #         if card.suit == inital_suit or not self.check_suit(inital_suit):
-    #             print('Played ', card)
-    #             return card
-    #         else:
-    #             print('Cannot play this card')
-    #             return self.play_card(inital_suit,cards_on_table)
-
     def play_card(self, init_suit, cards_on_table, winning_position):
         print(cards_on_table)
         # A_I makes the first move
         if init_suit is None:
             return self.highest_card()
-        elif winning_position > -1 and winning_position > 1:
-            return self.hand[init_suit].pop(0)
-
+        elif self.my_team_winning(winning_position):
+            # play a trash card your team is winning
+            return self.find_low_card(init_suit)
+        else:
+            return self.find_high_card_or_pass(init_suit)
 
 
     def find_value(self, lists):
@@ -126,10 +102,29 @@ class inital_AI:
 
         return Card(suit,self.hand[suit].pop())
 
+    def my_team_winning(self,winning_position):
+        if self.team == 1:
+            return -1 < winning_position < 2
+        else:
+            return winning_position > 1
 
+    def find_low_card(self, init_suit):
+        if not self.hand[init_suit]:
+            for key, cards in self.hand.items():
+                if key != self.hokm and key != init_suit:
+                    return Card(key,self.hand[key].pop(0))
 
+        else: return Card(init_suit,self.hand[init_suit].pop(0))
 
-
-
-
-
+    def find_high_card_or_pass(self, init_suit):
+        if not self.hand[init_suit]:
+            if not self.hand[self.hokm]:
+                # Cannot win hand have to throw a trash card.
+                for key, cards in self.hand.items():
+                    if key != self.hokm and key != init_suit:
+                        return Card(key, self.hand[key].pop(0))
+            # Else needs to be changed currently just playing highest hokm or highest init more needs to go into this
+            # later.
+            else: return Card(self.hokm,self.hand[self.hokm].pop())
+        else:
+            return Card(init_suit, self.hand[init_suit].pop())

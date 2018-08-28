@@ -2,7 +2,7 @@ from card import Card
 from suit import Suit
 from random import shuffle
 from player import Player
-from inital_ai import inital_AI
+from init_ai import init_AI
 from team import Team
 
 import random
