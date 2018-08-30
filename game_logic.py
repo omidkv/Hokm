@@ -5,6 +5,8 @@ from player import Player
 from init_ai import init_AI
 from team import Team
 from comp import Comp
+from termcolor import colored
+
 
 import random
 
@@ -100,10 +102,13 @@ while match_run:
             first = False
 
     # break
+    for player in iteration_of_players[index_of_king]:
+        player.hokm = comp.hokm
 
     for i in range(2):
         for player in iteration_of_players[index_of_king]:
             player.add_cards(deal_4(current_cards))
+
 
     # print(teammate.play_card(None, None, -1))
     # for player in iteration_of_players[index_of_king]:
@@ -114,28 +119,53 @@ while match_run:
             comp.set_and_comp(player.player_number,player.play_card(comp.initial_suit,comp.switcher_2,comp.high_card_index))
 
         index_of_starter = comp.high_card_index
+
         comp.print_cards()
         if comp.high_card_index < 2:
-            print('team1 gets a point')
+
             team1.hands_won = team1.hands_won + 1
+            print(colored('Team1 won the hand', 'cyan'))
+            string1 = '\nteam 1 has {0} points team2 has {1} points\n'.format(team1.hands_won,team2.hands_won)
+            print(colored(string1, 'red'))
             if team1.hands_won == 7:
                 team1.games_won = team1.games_won + 1
+
+                string1 = 'End of Game team 1 won {0} games and team 2 won {1}'.format(team1.games_won,
+                                                                                        team2.games_won)
+                print(colored(string1, 'magenta', attrs=['bold', 'dark']))
+                team1.hands_won = 0
+                team2.hands_won = 0
+                if index_of_king > 1:
+                    index_of_king = (index_of_king - 1) % 2
                 comp.new_game_reset()
                 break
         else:
-            print('team2 gets a point' )
+
             team2.hands_won = team2.hands_won + 1
+            print(colored('Team2 won the hand', 'yellow'))
+            string1 = '\nTeam1 has {0} points Team2 has {1} points\n'.format(team1.hands_won, team2.hands_won)
+            print(colored(string1, 'red'))
             if team2.hands_won == 7:
                 team2.games_won = team2.games_won + 1
+
+                string1 = 'End of Game team 1 won {0} games and team 2 won {1}'.format(team1.games_won,
+                                                                                        team2.games_won)
+                print(colored(string1, 'magenta', attrs=['bold', 'dark']))
+                team1.hands_won = 0
+                team2.hands_won = 0
+                if index_of_king < 1:
+                    index_of_king = index_of_king + 2
                 comp.new_game_reset()
                 break
         comp.after_hand_reset()
 
-    # print('human ' , human.hand)
-    # print('ai_1 ', ai_1.hand)
-    # print('ai_2 ', ai_2.hand)
-    #
-    # print('ai_3 ', ai_3.hand)
+    index_of_starter = index_of_king
+    first = True
+    current_cards = shuffle_cards(__init_deck())
+    for player in iteration_of_players[index_of_starter]:
+        player.reset_hand()
 
-
-    break
+    if team1.games_won == 7 or team2.games_won == 7:
+        string1 = 'End of Match team 1 won {0} games and team 2 won {1}'.format(team1.games_won,team2.games_won)
+        print(colored(string1,'magenta',attrs=['bold','dark']))
+        break

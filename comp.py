@@ -1,10 +1,8 @@
 from card import Card
 from suit import Suit
 
-# This
-#
-class Comp:
 
+class Comp:
     def __init__(self):
         self.player_card = Card(Suit.NONE, -1)
         self.teammate_ai = Card(Suit.NONE, -1)
@@ -14,11 +12,6 @@ class Comp:
         self.initial_suit = Suit.NONE
         self.high_card = Card(Suit.NONE, -1)
         self.high_card_index = -1
-        # player_card index = 0
-        # teammate_ai index = 1
-        # opponent_1 index = 2
-        # opponent_2 index = 3
-
 
         self.switcher_2 = {
 
@@ -28,22 +21,21 @@ class Comp:
             3: self.opponent_2
         }
 
-    def set_player_card(self,card):
+    def set_player_card(self, card):
         self.player_card = card
         self.switcher_2[0] = card
 
-    def set_teammate_ai(self,card):
+    def set_teammate_ai(self, card):
         self.teammate_ai = card
         self.switcher_2[1] = card
 
-    def set_opponent_1(self,card):
+    def set_opponent_1(self, card):
         self.opponent_1 = card
         self.switcher_2[2] = card
 
-    def set_opponent_2(self,card):
+    def set_opponent_2(self, card):
         self.opponent_1 = card
         self.switcher_2[3] = card
-
 
     switcher = {
         0: set_player_card,
@@ -52,9 +44,8 @@ class Comp:
         3: set_opponent_2
     }
 
-    def set_card(self,index,card):
-        self.switcher[index](self,card)
-
+    def set_card(self, index, card):
+        self.switcher[index](self, card)
 
     def after_hand_reset(self):
         hokm = self.hokm
@@ -64,23 +55,23 @@ class Comp:
     def new_game_reset(self):
         self.__init__()
 
-    def set_hokm(self,suit):
+    def set_hokm(self, suit):
         self.hokm = suit
 
-    def set_initial_suit(self,suit):
+    def set_initial_suit(self, suit):
         self.initial_suit = suit
 
-#   compare will see if the last card played is the winning card currently
-#    rules for winning either the same suit as the initial card and higher or
-#     hokm and the highest value.
-#
-#     if high card is none than other card is the high card
-#     if high card suit is hokm and the other cards suit isn't high card stays the same
-#     if high card suit is hokm and the other cards suit is high card is the higher of the values
-#     if high card suit isn't hokm and the other cards suit is the other card is now the high card
-#     if high card suit isn't hokm and the other card is the same as the init suit higher value wins
-#     if other card is any suit other than hokm or init it is a trash card and high card stays the same
-    def compare(self,index):
+    #   compare will see if the last card played is the winning card currently
+    #    rules for winning either the same suit as the initial card and higher or
+    #     hokm and the highest value.
+    #
+    #     if high card is none than other card is the high card
+    #     if high card suit is hokm and the other cards suit isn't high card stays the same
+    #     if high card suit is hokm and the other cards suit is high card is the higher of the values
+    #     if high card suit isn't hokm and the other cards suit is the other card is now the high card
+    #     if high card suit isn't hokm and the other card is the same as the init suit higher value wins
+    #     if other card is any suit other than hokm or init it is a trash card and high card stays the same
+    def compare(self, index):
         if self.high_card_index == -1:
             self.high_card = self.switcher_2[index]
             self.high_card_index = index
@@ -91,9 +82,9 @@ class Comp:
             other_card = self.switcher_2[index]
             if high_card_suit == self.hokm:
                 if other_card.suit == self.hokm and other_card.value > self.high_card.value:
-                        self.high_card = other_card
-                        self.high_card_index = index
-                        # print('here 1')
+                    self.high_card = other_card
+                    self.high_card_index = index
+                    # print('here 1')
 
             else:
                 if other_card.suit == self.hokm:
@@ -107,13 +98,14 @@ class Comp:
 
         return self.high_card_index
 
-    def set_and_comp(self,index,card):
-        self.set_card(index,card)
-        print(card)
+    def set_and_comp(self, index, card):
+        self.set_card(index, card)
+        # print(card)
         return self.compare(index)
 
     def print_cards(self):
-        print('My card is {0[0]}, Card of my teammate {0[1]}\n Cards of my opponent {0[2]}, {0[3]}'.format(self.switcher_2))
+        print('\nMy card is {0[0]}, Card of my teammate {0[1]}\n Cards of my opponent {0[2]}, {0[3]}'.format(
+            self.switcher_2))
 
 # test = Comp()
 # test.set_hokm(Suit.DIAMOND)
@@ -129,36 +121,3 @@ class Comp:
 # print(test.compare(0))
 
 # print(test.teammate_ai)
-
-
-
-
-
-# OLD method from game_logic
-
-# def high_card(inital_suit, cards_on_table, hokm):
-#     high_value = -1
-#     hokm_played = False
-#     winning_position = -1
-#     position = 0
-#     for tuple in cards_on_table:
-#         card = tuple[0]
-#         if card.suit == inital_suit and card.value > high_value and hokm_played is False:
-#            high_value = card.value
-#            winning_position = position
-#            position = position + 1
-#
-#         elif hokm_played is False and card.suit == hokm:
-#             hokm_played = True
-#             high_value = card.value
-#             winning_position = position
-#             position = position + 1
-#
-#         elif card.suit == hokm and card.value > high_value and hokm_played is True:
-#            high_value = card.value
-#            winning_position = position
-#            position = position + 1
-#         else:
-#             position = position + 1
-#
-#     return winning_position

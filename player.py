@@ -1,18 +1,18 @@
 from suit import Suit
 from card import Card
+from termcolor import colored
+
 
 class Player:
-
     team = -1
     suit_options = {"heart": Suit.HEART,
-               "spade": Suit.SPADE,
-               "club": Suit.CLUB,
-               "diamond": Suit.DIAMOND}
-
+                    "spade": Suit.SPADE,
+                    "club": Suit.CLUB,
+                    "diamond": Suit.DIAMOND}
 
     player_number = 0
 
-    def __init__(self,team):
+    def __init__(self, team):
         self.team = team
         # self.hand = list()
         self.hand = {
@@ -21,9 +21,27 @@ class Player:
             Suit.SPADE: list(),
             Suit.CLUB: list()
         }
+
     def __repr__(self):
         return "Human"
 
+    def reset_hand(self):
+        self.hand = {
+            Suit.HEART: list(),
+            Suit.DIAMOND: list(),
+            Suit.SPADE: list(),
+            Suit.CLUB: list()
+        }
+
+    def print_hand(self):
+        hearts = str(self.hand[Suit.HEART]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
+        diamonds = str(self.hand[Suit.DIAMOND]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14',
+                                                                                                                 'A')
+        clubs = str(self.hand[Suit.CLUB]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
+        spades = str(self.hand[Suit.SPADE]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
+
+        print(colored(str(Suit.HEART) + hearts + ' ' + str(Suit.DIAMOND) + diamonds, 'red','on_grey',attrs=['bold']))
+        print(colored(str(Suit.CLUB) + clubs + ' ' + str(Suit.SPADE) + spades, 'white','on_grey',attrs=['bold']))
     def card_value(self, str):
         if str.isdigit():
             return int(str)
@@ -35,8 +53,8 @@ class Player:
             return 12
         elif str == "K":
             return 13
-    def add_cards(self,cards):
-        # self.hand.extend(cards)
+
+    def add_cards(self, cards):
 
         for card in cards:
             self.hand[card.suit].append(card.value)
@@ -49,45 +67,48 @@ class Player:
         hokm = input("What is hokm?").lower().strip()
         print(hokm)
         return self.suit_options[hokm]
+
     # select card is called by play card this is where the program takes input from user.
 
     def select_card(self):
-        print(str(self.hand).replace('11','J').replace('12','Q').replace('13','K').replace('14','A'))
-        card_string = input("Select Card to Play?").strip()
+        self.print_hand()
+        card_string = input("\nSelect Card to Play?").strip()
         split_set = card_string.split()
-        if (self.card_value(split_set[1])) in self.hand[self.suit_options[split_set[0].lower()]]:
-            self.hand[self.suit_options[split_set[0].lower()]].remove(self.card_value(split_set[1]))
-            return Card(self.suit_options[split_set[0].lower()], self.card_value(split_set[1]))
+        card_val = self.card_value(split_set[1])
+
+        if split_set[0].lower() in self.suit_options:
+            suit = self.suit_options[split_set[0].lower()]
+            if (card_val) in self.hand[suit]:
+                return Card(suit, card_val)
+            else:
+                return self.select_card()
         else:
             return self.select_card()
-
-
-    #     check suit checks to make sure that the user doesn't have the init suit in their hand.
-
-    # def check_suit(self,suit):
-    #     for card in self.hand:
-    #         if card.suit == suit:
-    #             return True
-    #     return False
 
     # play card is what is called from the game. This is where game passes information to the player and receives their
     # card back.
     # This also uses check suit to validate the correct selection of a card.
 
-    def play_card(self,inital_suit,cards_on_table,winning_position):
-        print('\nCard of my teammate {0[1]}\nCards of my opponent {0[2]}, {0[3]}\n\n'.format(cards_on_table))
+    def play_card(self, inital_suit, cards_on_table, winning_position):
         # (self.hand.sort())
         if inital_suit == Suit.NONE:
+            stringer = '\n No Cards have been played \nHokm is {0}\n'.format(self.hokm)
+            print(colored(stringer,'green'))
             card = self.select_card()
             print('Played ', card)
+            self.hand[card.suit].remove(card.value)
             return card
 
         else:
-            print('The initial suit for this round is ', inital_suit)
+            string1 = 'The initial suit for this round is {0}\nThe hokm is {1}\n'.format(inital_suit,self.hokm)
+            print(colored(string1,'blue'))
+            string2 = '\nCard of my teammate {0[1]}\nCards of my opponent {0[2]}, {0[3]}\n\n'.format(cards_on_table)
+            print(colored(string2,'cyan'))
             card = self.select_card()
-            if card.suit == inital_suit or self.hand[inital_suit]is None:
+            if card.suit == inital_suit or not self.hand[inital_suit]:
                 print('Played ', card)
+                self.hand[card.suit].remove(card.value)
                 return card
             else:
                 print('Cannot play this card')
-                return self.play_card(inital_suit,cards_on_table,winning_position)
+                return self.play_card(inital_suit, cards_on_table, winning_position)

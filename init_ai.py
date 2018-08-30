@@ -32,6 +32,15 @@ class init_AI:
 
         self.hokm = hokm
 
+
+    def reset_hand(self):
+        self.hand = {
+            Suit.HEART: list(),
+            Suit.DIAMOND: list(),
+            Suit.SPADE: list(),
+            Suit.CLUB: list()
+        }
+
     def card_value(self, str):
         if str.isdigit():
             return int(str)
@@ -94,7 +103,9 @@ class init_AI:
         highest_value = -1
         suit = Suit.NONE
         for key, card_value in self.hand.items():
-            if card_value is not None:
+            # print('See the card_value for out of index, ',card_value)
+            if card_value:
+
                 high_in_suit = card_value[-1]
                 if high_in_suit > highest_value:
                     suit = key
@@ -112,17 +123,21 @@ class init_AI:
         if not self.hand[init_suit]:
             for key, cards in self.hand.items():
                 if key != self.hokm and key != init_suit:
-                    return Card(key,self.hand[key].pop(0))
+                    try:
+                        return Card(key,self.hand[key].pop(0))
+                    except IndexError:
+                        return self.find_high_card_or_pass(init_suit)
 
         else: return Card(init_suit,self.hand[init_suit].pop(0))
 
     def find_high_card_or_pass(self, init_suit):
-        print(init_suit)
+        # print(init_suit)
         if self.hand[init_suit] is None or not self.hand[init_suit]:
+            # print(self.hokm)
             if not self.hand[self.hokm]:
                 # Cannot win hand have to throw a trash card.
                 for key, cards in self.hand.items():
-                    if key != self.hokm and key != init_suit:
+                    if key != self.hokm and key != init_suit and cards:
                         return Card(key, self.hand[key].pop(0))
             # Else needs to be changed currently just playing highest hokm or highest init more needs to go into this
             # later.
