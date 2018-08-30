@@ -18,18 +18,18 @@ class Card:
 
     def __str__(self):
         if self.value <= 10 and self.value != 1:
-            return str(self.suit) + '  '+ str(self.value)
+            return str(self.suit) + ' '+ str(self.value)
 
         elif self.value == 11:
-            return str(self.suit) + '  J'
+            return str(self.suit) + ' J'
 
         elif self.value == 12:
-            return str(self.suit) + '  Q'
+            return str(self.suit) + ' Q'
 
         elif self.value == 13:
-            return str(self.suit) + '  K'
+            return str(self.suit) + ' K'
         elif self.value == 14:
-            return str(self.suit) + '  A'
+            return str(self.suit) + ' A'
 
     def __repr__(self):
         return str(self)

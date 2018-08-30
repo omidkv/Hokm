@@ -49,7 +49,7 @@ class init_AI:
             self.hand[card.suit].append(card.value)
         for key, items in self.hand.items():
             items.sort()
-        print(self.hand)
+        # print(self.hand)
 
     def select_hokm(self):
         hokm = Suit.NONE
@@ -63,7 +63,7 @@ class init_AI:
                     hokm = key
                     max_length = new_length
                     max_value = new_value
-        print(hokm)
+        # print(hokm)
         return hokm
 
     # def check_suit(self,suit):
@@ -73,9 +73,9 @@ class init_AI:
     #     return False
     # play_card requires the A_I to look at cards on table and play, if first card they should pick their highest card.
     def play_card(self, init_suit, cards_on_table, winning_position):
-        print(cards_on_table)
+        # print(cards_on_table)
         # A_I makes the first move
-        if init_suit is None:
+        if init_suit == Suit.NONE:
             return self.highest_card()
         elif self.my_team_winning(winning_position):
             # play a trash card your team is winning
@@ -94,11 +94,11 @@ class init_AI:
         highest_value = -1
         suit = Suit.NONE
         for key, card_value in self.hand.items():
-
-            high_in_suit = card_value[-1]
-            if high_in_suit > highest_value:
-                suit = key
-                highest_value = high_in_suit
+            if card_value is not None:
+                high_in_suit = card_value[-1]
+                if high_in_suit > highest_value:
+                    suit = key
+                    highest_value = high_in_suit
 
         return Card(suit,self.hand[suit].pop())
 
@@ -117,7 +117,8 @@ class init_AI:
         else: return Card(init_suit,self.hand[init_suit].pop(0))
 
     def find_high_card_or_pass(self, init_suit):
-        if not self.hand[init_suit]:
+        print(init_suit)
+        if self.hand[init_suit] is None or not self.hand[init_suit]:
             if not self.hand[self.hokm]:
                 # Cannot win hand have to throw a trash card.
                 for key, cards in self.hand.items():

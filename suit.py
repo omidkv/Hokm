@@ -3,10 +3,10 @@ from enum import Enum
 
 class Suit(Enum):
 
-    HEART = 'heart'
-    SPADE = 'spade'
-    DIAMOND = 'diamond'
-    CLUB = 'club'
+    HEART = 'heart \u2665'
+    SPADE = 'spade \u2660'
+    DIAMOND = 'diamond \u2666'
+    CLUB = 'club \u2663'
     NONE = 'none'
 
     def __lt__(self, other):

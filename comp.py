@@ -85,7 +85,7 @@ class Comp:
             self.high_card = self.switcher_2[index]
             self.high_card_index = index
             self.initial_suit = self.switcher_2[index].suit
-            print('here 0')
+            # print('here 0')
         else:
             high_card_suit = self.high_card.suit
             other_card = self.switcher_2[index]
@@ -93,35 +93,40 @@ class Comp:
                 if other_card.suit == self.hokm and other_card.value > self.high_card.value:
                         self.high_card = other_card
                         self.high_card_index = index
-                        print('here 1')
+                        # print('here 1')
 
             else:
                 if other_card.suit == self.hokm:
                     self.high_card = other_card
                     self.high_card_index = index
-                    print('here 2')
+                    # print('here 2')
                 elif other_card.suit == self.initial_suit and other_card.value > self.high_card.value:
                     self.high_card = other_card
                     self.high_card_index = index
-                    print('here 3')
+                    # print('here 3')
 
         return self.high_card_index
 
     def set_and_comp(self,index,card):
         self.set_card(index,card)
+        print(card)
         return self.compare(index)
-test = Comp()
-test.set_hokm(Suit.DIAMOND)
-test.set_card(1, Card(Suit.HEART, 10))
-print(test.teammate_ai)
-test.compare(1)
-test.set_card(2, Card(Suit.DIAMOND, 2))
-print(test.compare(2))
-test.set_card(3, Card(Suit.HEART, 11))
-print(test.compare(3))
 
-test.set_card(0, Card(Suit.SPADE, 14))
-print(test.compare(0))
+    def print_cards(self):
+        print('My card is {0[0]}, Card of my teammate {0[1]}\n Cards of my opponent {0[2]}, {0[3]}'.format(self.switcher_2))
+
+# test = Comp()
+# test.set_hokm(Suit.DIAMOND)
+# test.set_card(1, Card(Suit.HEART, 10))
+# print(test.teammate_ai)
+# test.compare(1)
+# test.set_card(2, Card(Suit.DIAMOND, 2))
+# print(test.compare(2))
+# test.set_card(3, Card(Suit.HEART, 11))
+# print(test.compare(3))
+#
+# test.set_card(0, Card(Suit.SPADE, 14))
+# print(test.compare(0))
 
 # print(test.teammate_ai)
 
