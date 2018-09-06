@@ -1,6 +1,6 @@
 from enum import Enum
 
-
+# The different Suits of cards saved as an enum.
 class Suit(Enum):
 
     HEART = 'heart \u2665'

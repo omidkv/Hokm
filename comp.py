@@ -2,6 +2,10 @@ from card import Card
 from suit import Suit
 
 
+# Comp is a class that is used by the game logic to see the current winner of the hand is.
+# Comp also stores the cards that are on the table.
+#
+#
 class Comp:
     def __init__(self):
         self.player_card = Card(Suit.NONE, -1)
@@ -98,26 +102,14 @@ class Comp:
 
         return self.high_card_index
 
+    # set_and_comp is the function called by the game logic to set a card and run a compare after that moment.
     def set_and_comp(self, index, card):
         self.set_card(index, card)
         # print(card)
         return self.compare(index)
 
+    # print_cards is used to print the cards that are on the table after all of the cards are played.
+    # User needs to see the cards that have been played in order to make a good decision.
     def print_cards(self):
         print('\nMy card is {0[0]}, Card of my teammate {0[1]}\n Cards of my opponent {0[2]}, {0[3]}'.format(
             self.switcher_2))
-
-# test = Comp()
-# test.set_hokm(Suit.DIAMOND)
-# test.set_card(1, Card(Suit.HEART, 10))
-# print(test.teammate_ai)
-# test.compare(1)
-# test.set_card(2, Card(Suit.DIAMOND, 2))
-# print(test.compare(2))
-# test.set_card(3, Card(Suit.HEART, 11))
-# print(test.compare(3))
-#
-# test.set_card(0, Card(Suit.SPADE, 14))
-# print(test.compare(0))
-
-# print(test.teammate_ai)

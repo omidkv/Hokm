@@ -3,6 +3,7 @@ from card import Card
 from termcolor import colored
 
 
+# Player is the class that controls user input from the terminal
 class Player:
     team = -1
     suit_options = {"heart": Suit.HEART,
@@ -14,17 +15,18 @@ class Player:
 
     def __init__(self, team):
         self.team = team
-        # self.hand = list()
         self.hand = {
             Suit.HEART: list(),
             Suit.DIAMOND: list(),
             Suit.SPADE: list(),
             Suit.CLUB: list()
         }
+        self.hokm = Suit.NONE
 
     def __repr__(self):
         return "Human"
 
+    # resets the players hand after the game
     def reset_hand(self):
         self.hand = {
             Suit.HEART: list(),
@@ -33,6 +35,7 @@ class Player:
             Suit.CLUB: list()
         }
 
+    # prints the player hand nicely
     def print_hand(self):
         hearts = str(self.hand[Suit.HEART]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
         diamonds = str(self.hand[Suit.DIAMOND]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14',
@@ -40,8 +43,10 @@ class Player:
         clubs = str(self.hand[Suit.CLUB]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
         spades = str(self.hand[Suit.SPADE]).replace('11', 'J').replace('12', 'Q').replace('13', 'K').replace('14', 'A')
 
-        print(colored(str(Suit.HEART) + hearts + ' ' + str(Suit.DIAMOND) + diamonds, 'red','on_grey',attrs=['bold']))
-        print(colored(str(Suit.CLUB) + clubs + ' ' + str(Suit.SPADE) + spades, 'white','on_grey',attrs=['bold']))
+        print(colored(str(Suit.HEART) + hearts + ' ' + str(Suit.DIAMOND) + diamonds, 'red', 'on_grey', attrs=['bold']))
+        print(colored(str(Suit.CLUB) + clubs + ' ' + str(Suit.SPADE) + spades, 'white', 'on_grey', attrs=['bold']))
+
+    # translates a letter into the value of the card
     def card_value(self, str):
         if str.isdigit():
             return int(str)
@@ -78,7 +83,7 @@ class Player:
 
         if split_set[0].lower() in self.suit_options:
             suit = self.suit_options[split_set[0].lower()]
-            if (card_val) in self.hand[suit]:
+            if card_val in self.hand[suit]:
                 return Card(suit, card_val)
             else:
                 return self.select_card()
@@ -90,20 +95,19 @@ class Player:
     # This also uses check suit to validate the correct selection of a card.
 
     def play_card(self, inital_suit, cards_on_table, winning_position):
-        # (self.hand.sort())
         if inital_suit == Suit.NONE:
             stringer = '\n No Cards have been played \nHokm is {0}\n'.format(self.hokm)
-            print(colored(stringer,'green'))
+            print(colored(stringer, 'green'))
             card = self.select_card()
             print('Played ', card)
             self.hand[card.suit].remove(card.value)
             return card
 
         else:
-            string1 = 'The initial suit for this round is {0}\nThe hokm is {1}\n'.format(inital_suit,self.hokm)
-            print(colored(string1,'blue'))
+            string1 = 'The initial suit for this round is {0}\nThe hokm is {1}\n'.format(inital_suit, self.hokm)
+            print(colored(string1, 'blue'))
             string2 = '\nCard of my teammate {0[1]}\nCards of my opponent {0[2]}, {0[3]}\n\n'.format(cards_on_table)
-            print(colored(string2,'cyan'))
+            print(colored(string2, 'cyan'))
             card = self.select_card()
             if card.suit == inital_suit or not self.hand[inital_suit]:
                 print('Played ', card)

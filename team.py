@@ -1,3 +1,6 @@
+# the class team is used to store the number of hands and games won.
+# it also keeps track of the players in each team.
+
 
 class Team:
     hands_won = 0

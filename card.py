@@ -1,24 +1,24 @@
 import suit
 
-class Card:
 
+#
+# Card is a class that holds a suit and a value.
+# The values range from  2 to 14 where 11 is Jack, 12 is Queen, 13 is King and 14 is Ace
+#
+class Card:
     suit
     value = 0
 
-    def __init__(self,suit,value):
+    def __init__(self, suit, value):
         self.suit = suit
         self.value = value
 
     def __eq__(self, other):
-        # print(self, other)
-        # print (self.value == other.value)
-        # print (self.suit == other.suit)
-
         return self.value == other.value and self.suit == other.suit
 
     def __str__(self):
         if self.value <= 10 and self.value != 1:
-            return str(self.suit) + ' '+ str(self.value)
+            return str(self.suit) + ' ' + str(self.value)
 
         elif self.value == 11:
             return str(self.suit) + ' J'
@@ -35,9 +35,9 @@ class Card:
         return str(self)
 
     def __lt__(self, other):
-      if self.suit < other.suit:
-          return True
-      elif self.suit > other.suit:
-          return False
-      else:
-          return self.value < other.value
+        if self.suit < other.suit:
+            return True
+        elif self.suit > other.suit:
+            return False
+        else:
+            return self.value < other.value
