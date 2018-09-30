@@ -144,3 +144,7 @@ class init_AI:
                 return Card(self.hokm, self.hand[self.hokm].pop())
         else:
             return Card(init_suit, self.hand[init_suit].pop())
+
+    def update_cards_played(self, cards, _ ):
+
+        None

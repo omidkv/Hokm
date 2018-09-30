@@ -3,6 +3,7 @@ from suit import Suit
 from random import shuffle
 from player import Player
 from init_ai import init_AI
+from second_ai import second_AI
 from team import Team
 from comp import Comp
 from termcolor import colored
@@ -12,9 +13,10 @@ import random
 game_run = True
 match_run = True
 human = Player(1)
-teammate = init_AI(1, 1)
-opponent_1 = init_AI(2, 2)
-opponent_2 = init_AI(2, 3)
+# human = second_AI(1,0, 1)
+teammate = second_AI(1, 1, 0)
+opponent_1 = second_AI(2, 2, 3)
+opponent_2 = second_AI(2, 3, 2)
 team1 = Team(human, teammate)
 team2 = Team(opponent_1, opponent_2)
 
@@ -121,6 +123,10 @@ while match_run:
         index_of_starter = comp.high_card_index
 
         comp.print_cards()
+        # allow AI to know which cards have been played.
+        for player in iteration_of_players[index_of_starter]:
+            player.update_cards_played(comp.switcher_2, comp.initial_suit)
+
         if comp.high_card_index < 2:
 
             team1.hands_won = team1.hands_won + 1

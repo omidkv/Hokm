@@ -116,3 +116,7 @@ class Player:
             else:
                 print('Cannot play this card')
                 return self.play_card(inital_suit, cards_on_table, winning_position)
+
+    def update_cards_played(self,cards, _):
+
+        None
