@@ -69,12 +69,12 @@ class second_AI:
         elif str == "K":
             return 13
 
+    # add cards is used when cards are dealt
     def add_cards(self, cards):
         for card in cards:
             self.hand[card.suit].append(card.value)
         for key, items in self.hand.items():
             items.sort()
-            # print(self.hand)
 
     # selects hokm based on which suit has the most cards. Or which has the highest total value if there is a tie
     def select_hokm(self):
@@ -97,13 +97,8 @@ class second_AI:
 
         if init_suit == Suit.NONE:
             return self.first_to_play()
-        # elif self.my_team_winning(winning_position):
-        #     # play a trash card your team is winning
-        #     return self.find_low_card(init_suit)
         else:
             card = self.not_first(init_suit, cards_on_table, winning_position)
-            if(card is None):
-                raise Exception("Failed")
             return card
 
     # find value is used when selecting the hokm
@@ -127,13 +122,6 @@ class second_AI:
 
         self.check_for_sure_win(suit, highest_value)
         return Card(suit, self.hand[suit][-1])
-
-    # determine if their team is winning
-    def my_team_winning(self, winning_position):
-        if self.team == 1:
-            return -1 < winning_position < 2
-        else:
-            return winning_position > 1
 
     # find the lowest card that they can play
     def find_low_card(self, init_suit):
@@ -165,36 +153,22 @@ class second_AI:
         else:
             return Card(init_suit, self.hand[init_suit].pop())
 
+    # update_cards_played is used so that the computer can be knowledgeable about what cards have been played
     def update_cards_played(self, cards, init_suit):
-
-        # Need to check the out of cards later
         for key, card in cards.items():
             self.cards_played[card.suit].append(card.value)
             if key == self.teammate_index:
                 if card.suit != init_suit:
-                    # print('Marker')
-                    # print(card.suit)
-                    # print('init suit', init_suit)
                     self.suit_partner_doesnt_have.append(init_suit)
 
-        # print('Cards ', self.cards_played)
-
+    # See if the card the is a guaranteed win based on what has been seen already
     def check_for_sure_win(self, suit, value):
         cards_played = self.cards_played[suit]
         cards_larger = 14 - value
-
         new_list = [i for i in cards_played if i > value]
-        # print("Marker")
-        # print(value)
-        # print(new_list)
-        # print(len(new_list) == cards_larger)
         return len(new_list) == cards_larger
 
-    # def play_card(self, init_suit, cards_on_table, winning_position):
-    #     # This is when you are the first to play
-    #     if init_suit == Suit.NONE:
-
-
+    # The sequence of choices if the computer is the first to play a card.
     def first_to_play(self):
         # card that will definitely win
         for suit, values in self.hand.items():
@@ -208,17 +182,19 @@ class second_AI:
             if len(self.hand[suit]) > 0:
                 return Card(suit, self.hand[suit].pop(0))
 
+        # play a low card to fish for the card blocking the computers highest card
         highest_card = self.highest_card()
-        # print('Marker')
-        # print(highest_card)
+
         return Card(highest_card.suit, self.hand[highest_card.suit].pop(0))
 
+    # The sequence of choices if the computer isn't the first to play a card
     def not_first(self, init_suit, cards_on_table, winning_position):
 
         if len(self.hand[init_suit]) > 0:
             return self.play_from_init_suit(init_suit, cards_on_table, winning_position)
-        return self.play_another_suit(init_suit,cards_on_table,winning_position)
+        return self.play_another_suit(init_suit, cards_on_table, winning_position)
 
+    # check if your teammate has a guaranteed win already.
     def teammate_guarenteed_win(self, cards_on_table, winning_position):
         if winning_position != self.teammate_index:
             return False
@@ -226,6 +202,7 @@ class second_AI:
             card = cards_on_table[winning_position]
             return self.check_for_sure_win(card.suit, card.value)
 
+    # Check if it is possible for the computer to take the lead based on what is on the table
     def check_if_can_take_lead(self, init_suit, cards_on_table, winning_position):
         winning_card = cards_on_table[winning_position]
         if winning_card.suit != init_suit:
@@ -237,6 +214,7 @@ class second_AI:
             else:
                 return True
 
+    # if the computer can guarantee a win play that or just take a lead
     def play_guarenteed_win_or_just_ahead(self, init_suit, cards_on_table, winning_position):
         winning_card = cards_on_table[winning_position]
         cards_ahead = [i for i in self.hand[init_suit] if i > winning_card.value]
@@ -247,6 +225,7 @@ class second_AI:
             self.hand[init_suit].remove(value)
             return Card(init_suit, value)
 
+    # If the user has the init suit left they will play from this sequence of decisions.
     def play_from_init_suit(self, init_suit, cards_on_table, winning_position):
         if self.teammate_guarenteed_win(cards_on_table, winning_position) or not self.check_if_can_take_lead(init_suit,
                                                                                                              cards_on_table,
@@ -255,6 +234,7 @@ class second_AI:
         else:
             return self.play_guarenteed_win_or_just_ahead(init_suit, cards_on_table, winning_position)
 
+    # If they don't have the init suit and their teammate doesn't have the guaranteed win
     def play_lowest_hokm_or_pass(self, init_suit, cards_on_table, winning_position):
         winning_card = cards_on_table[winning_position]
         if winning_card.suit == self.hokm:
@@ -267,19 +247,15 @@ class second_AI:
         else:
             return Card(self.hokm, self.hand[self.hokm].pop(0))
 
+    # the decision when the computer is out of the init suit
     def play_another_suit(self, init_suit, cards_on_table, winning_position):
         if self.teammate_index == winning_position:
             teammate_card = cards_on_table[winning_position]
             if self.check_for_sure_win(teammate_card.suit, teammate_card.value):
-                # print("1")
-
                 return self.find_low_card(init_suit)
 
         if len(self.hand[self.hokm]) == 0:
-            # print("2")
             return self.find_low_card(init_suit)
 
-
         else:
-            # print("3")
             return self.play_lowest_hokm_or_pass(init_suit, cards_on_table, winning_position)
