@@ -70,7 +70,7 @@ class init_AI:
             new_length = len(lists)
             if new_length >= max_length:
                 new_value = self.find_value(lists)
-                if new_length > max_length or new_value > max_value:
+                if new_length > max_length or (new_length == max_length and new_value > max_value):
                     hokm = key
                     max_length = new_length
                     max_value = new_value
@@ -148,3 +148,7 @@ class init_AI:
     def update_cards_played(self, cards, _ ):
 
         None
+
+
+
+

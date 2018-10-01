@@ -12,8 +12,8 @@ import random
 
 game_run = True
 match_run = True
-human = Player(1)
-# human = second_AI(1,0, 1)
+# human = Player(1)
+human = second_AI(1,0, 1)
 teammate = second_AI(1, 1, 0)
 opponent_1 = second_AI(2, 2, 3)
 opponent_2 = second_AI(2, 3, 2)
